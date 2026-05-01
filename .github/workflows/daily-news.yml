@@ -1,0 +1,59 @@
+name: 小児医療ニュース 毎朝配信
+
+on:
+  schedule:
+    # 毎朝 6:00 AM 日本時間 = 21:00 UTC（前日）
+    - cron: '0 21 * * *'
+  # 手動実行ボタン（テスト用）
+  workflow_dispatch:
+
+jobs:
+  generate-and-deliver:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # HTML ファイルをリポジトリに書き込むために必要
+
+    steps:
+      # ── 1. リポジトリをチェックアウト ──────────────────────────────
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      # ── 2. Python 環境のセットアップ ───────────────────────────────
+      - name: Python 3.12 をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # ── 3. 依存ライブラリのインストール ────────────────────────────
+      - name: 依存ライブラリをインストール
+        run: pip install openai
+
+      # ── 4. ニュース生成 ─────────────────────────────────────────────
+      - name: ニュースを生成して HTML を作成
+        id: generate
+        run: python scripts/generate_news.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      # ── 5. 生成した HTML を GitHub にコミット・プッシュ ─────────────
+      - name: HTML を GitHub Pages にプッシュ
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "*.html" index.html
+          git diff --staged --quiet || git commit -m "Daily news: $(date -u +'%Y-%m-%d')"
+          git push
+
+      # ── 6. LINE に URL を送信 ───────────────────────────────────────
+      - name: LINE にニュースを送信
+        run: |
+          curl -s -X POST https://api.line.me/v2/bot/message/push \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}" \
+            -d "{
+              \"to\": \"${{ secrets.LINE_USER_ID }}\",
+              \"messages\": [{
+                \"type\": \"text\",
+                \"text\": \"🏥 本日の小児医療ニュース\n${{ steps.generate.outputs.date }}\n\n▶ こちらからご覧ください\n${{ steps.generate.outputs.url }}\"
+              }]
+            }"
