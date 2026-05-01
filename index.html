@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>小児医療ニュース — 2026年5月1日（金）</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --line-bg: #d8f4e0;
+      --header-bg: #9ed9b4;
+      --header-text: #2d5a3d;
+      --phone-shadow: rgba(120, 160, 140, 0.35);
+      --bubble-1: #ffe8f0;
+      --bubble-1-border: #f5c6d8;
+      --bubble-2: #e8f4ff;
+      --bubble-2-border: #b8d9f5;
+      --bubble-3: #fff9e0;
+      --bubble-3-border: #f5e6a8;
+      --takeaway-bg: rgba(255, 255, 255, 0.75);
+      --text: #3d3d45;
+      --muted: #6b6b78;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px 32px;
+      font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Yu Gothic UI", sans-serif;
+      background: linear-gradient(160deg, #e8f8f0 0%, #f5e8f8 45%, #e8eef8 100%);
+      color: var(--text);
+    }
+
+    .phone {
+      width: min(100%, 390px);
+      max-height: min(92vh, 780px);
+      background: #fff;
+      border-radius: 36px;
+      box-shadow:
+        0 24px 48px var(--phone-shadow),
+        0 0 0 10px #fff,
+        0 0 0 12px rgba(180, 210, 190, 0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-header-band {
+      flex-shrink: 0;
+      background: linear-gradient(
+        135deg,
+        #8ec5a8 0%,
+        #a8d9b8 22%,
+        #c5ebd4 45%,
+        #9ed9b4 68%,
+        #7db89a 88%,
+        #8ec5a8 100%
+      );
+      background-size: 400% 400%;
+      animation: headerBandShine 9s ease infinite;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    @keyframes headerBandShine {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .status-bar {
+      height: 8px;
+      background: transparent;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 2px 46px 4px 38px;
+      background: transparent;
+      color: var(--header-text);
+      flex-shrink: 0;
+    }
+
+    .back-btn {
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.55);
+      color: var(--header-text);
+      font-size: 20px;
+      line-height: 1;
+      cursor: default;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    .header-titles {
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+      transform: translateX(-30px);
+    }
+
+    .header-titles h1 {
+      margin: 0;
+      font-size: 1.12rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+
+    .header-mascot {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      object-position: center center;
+      flex-shrink: 0;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+      display: block;
+      margin-left: -64px;
+      margin-right: 0;
+      animation: mascotSwayX 8s ease infinite, mascotWobbleY 0.6s ease-in-out infinite;
+    }
+
+    @keyframes mascotSwayX {
+      0%, 100% { transform: translateX(-42px); }
+      50%       { transform: translateX(42px); }
+    }
+
+    @keyframes mascotWobbleY {
+      0%, 100% { translate: 0 0; }
+      50%       { translate: 0 -5px; }
+    }
+
+    .chat-scroll {
+      flex: 1;
+      overflow-y: auto;
+      background-color: var(--line-bg);
+      background-image:
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.78) 0%,
+          rgba(248, 252, 249, 0.72) 45%,
+          rgba(245, 242, 252, 0.76) 100%
+        ),
+        url("assets/pediatric-clinic-bg.png");
+      background-size: 100% 100%, 280px auto;
+      background-repeat: no-repeat, repeat;
+      background-position: 0 0, center 0;
+      animation: chatPatternRise 24s linear infinite;
+      padding: 16px 12px 24px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    @keyframes chatPatternRise {
+      0%   { background-position: 0 0, center 0; }
+      100% { background-position: 0 0, center -280px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .phone-header-band { animation: none; background: linear-gradient(180deg, #a8e0bc 0%, var(--header-bg) 100%); background-size: auto; }
+      .chat-scroll        { animation: none; }
+      .header-mascot      { animation: none; }
+    }
+
+    .date-pill {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .date-pill span {
+      display: inline-block;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.65);
+      border-radius: 999px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .row {
+      margin-bottom: 14px;
+    }
+
+    .bubble-wrap {
+      max-width: 100%;
+    }
+
+    .bubble {
+      padding: 12px 14px 12px;
+      border-radius: 20px 20px 20px 6px;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      line-height: 1.65;
+      font-size: 0.82rem;
+    }
+
+    .bubble.b1 { background: var(--bubble-1); border-color: var(--bubble-1-border); }
+    .bubble.b2 { background: var(--bubble-2); border-color: var(--bubble-2-border); }
+    .bubble.b3 { background: var(--bubble-3); border-color: var(--bubble-3-border); }
+
+    .bubble h2 {
+      margin: 0 0 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--header-text);
+    }
+
+    .bubble .topic {
+      margin: 0 0 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #4a4a55;
+    }
+
+    .bubble ul {
+      margin: 0 0 12px;
+      padding-left: 1.1em;
+    }
+
+    .bubble li {
+      margin-bottom: 6px;
+    }
+
+    .bubble li:last-child {
+      margin-bottom: 0;
+    }
+
+    .takeaway {
+      margin: 0;
+      padding: 10px 12px;
+      background: var(--takeaway-bg);
+      border-radius: 12px;
+      border-left: 4px solid #7bc99a;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #2d4a38;
+      line-height: 1.55;
+    }
+
+    .takeaway::before {
+      content: "→ ";
+      color: #3d8f5c;
+      font-weight: 800;
+      margin-right: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone" role="img" aria-label="スマートフォン画面のモックアップ。小児医療ニュースをLINE風チャットで表示">
+    <div class="phone-header-band">
+      <div class="status-bar" aria-hidden="true"></div>
+      <header class="chat-header">
+        <button type="button" class="back-btn" aria-label="戻る">‹</button>
+        <div class="header-titles">
+          <h1>小児医療ニュース</h1>
+        </div>
+        <img
+          class="header-mascot"
+          src="assets/angel-pediatrician.png"
+          width="54"
+          height="54"
+          alt="天使の小児科医のイラスト"
+        />
+      </header>
+    </div>
+
+    <div class="chat-scroll">
+      <div class="date-pill">
+        <span>2026年5月1日（金）</span>
+      </div>
+
+      <div class="row">
+        <div class="bubble-wrap">
+          <article class="bubble b1">
+            <h2>① 国際・海外</h2>
+            <p class="topic">World Health Organization：新しい小児ワクチンの推奨</p>
+            <ul>
+              <li>概要：WHOは新たな小児用ワクチンの推奨を発表しました。</li>
+              <li>ポイント：このワクチンは特定の感染症に対する予防効果が高いとされています。</li>
+            </ul>
+            <p class="takeaway">医療従事者は新しいワクチンの導入に備え、最新のガイドラインを確認し、保護者への情報提供を強化する必要があります。</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="bubble-wrap">
+          <article class="bubble b2">
+            <h2>② 日本全体</h2>
+            <p class="topic">厚生労働省：小児医療費助成制度の拡充</p>
+            <ul>
+              <li>概要：厚生労働省は小児医療費助成制度の対象年齢を拡大しました。</li>
+              <li>ポイント：これにより、より多くの家庭が医療費の負担軽減を受けられるようになります。</li>
+            </ul>
+            <p class="takeaway">医療機関は新しい助成制度の詳細を把握し、該当する患者家族に適切な情報提供とサポートを行うことが求められます。</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="bubble-wrap">
+          <article class="bubble b3">
+            <h2>③ 地域（北多摩西部）</h2>
+            <p class="topic">東大和市公式ホームページ：定期予防接種の実施医療機関の更新</p>
+            <ul>
+              <li>概要：東大和市は令和8年度の子どもの定期予防接種実施医療機関一覧を更新しました。</li>
+              <li>内容：市内および近隣10市の一部医療機関で予防接種の相互乗り入れを実施しています。</li>
+            </ul>
+            <p class="takeaway">地域の小児科外来は最新の実施医療機関情報を確認し、保護者に適切な案内を行うことで、予防接種の円滑な実施を支援する必要があります。</p>
+          </article>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
