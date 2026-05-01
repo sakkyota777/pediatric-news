@@ -163,10 +163,10 @@ if github_output:
 print(f"[INFO] 公開 URL: {page_url}")
 
 # ── LINE 送信 ──────────────────────────────────────────────────────
-import urllib.request
+import requests as http_requests
 
-line_token   = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN")
-line_user_id = os.environ.get("LINE_USER_ID")
+line_token   = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN", "").strip()
+line_user_id = os.environ.get("LINE_USER_ID", "").strip()
 
 if line_token and line_user_id:
     message_text = (
@@ -175,26 +175,22 @@ if line_token and line_user_id:
         f"▶ こちらからご覧ください\n"
         f"{page_url}"
     )
-    payload = json.dumps({
-        "to": line_user_id,
-        "messages": [{"type": "text", "text": message_text}],
-    }).encode("utf-8")
-
-    req = urllib.request.Request(
+    res = http_requests.post(
         "https://api.line.me/v2/bot/message/push",
-        data=payload,
         headers={
             "Content-Type": "application/json",
             "Authorization": f"Bearer {line_token}",
         },
-        method="POST",
+        json={
+            "to": line_user_id,
+            "messages": [{"type": "text", "text": message_text}],
+        },
+        timeout=30,
     )
-    try:
-        with urllib.request.urlopen(req) as res:
-            print(f"[INFO] LINE 送信成功: {res.status}")
-    except urllib.error.HTTPError as e:
-        body = e.read().decode("utf-8")
-        print(f"[ERROR] LINE 送信失敗: {e.code} {body}", file=sys.stderr)
+    if res.status_code == 200:
+        print("[INFO] LINE 送信成功")
+    else:
+        print(f"[ERROR] LINE 送信失敗: {res.status_code} {res.text}", file=sys.stderr)
         sys.exit(1)
 else:
     print("[WARN] LINE_CHANNEL_ACCESS_TOKEN または LINE_USER_ID が未設定のためスキップ")
