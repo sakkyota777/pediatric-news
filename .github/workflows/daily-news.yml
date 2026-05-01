@@ -28,32 +28,19 @@ jobs:
       - name: 依存ライブラリをインストール
         run: pip install openai
 
-      # ── 4. ニュース生成 ─────────────────────────────────────────────
-      - name: ニュースを生成して HTML を作成
-        id: generate
+      # ── 4. ニュース生成・LINE 送信 ─────────────────────────────────
+      - name: ニュースを生成して HTML を作成 → LINE に送信
         run: python scripts/generate_news.py
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY:              ${{ secrets.OPENAI_API_KEY }}
+          LINE_CHANNEL_ACCESS_TOKEN:   ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_USER_ID:                ${{ secrets.LINE_USER_ID }}
 
       # ── 5. 生成した HTML を GitHub にコミット・プッシュ ─────────────
       - name: HTML を GitHub Pages にプッシュ
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add "*.html" index.html
+          git add *.html index.html
           git diff --staged --quiet || git commit -m "Daily news: $(date -u +'%Y-%m-%d')"
           git push
-
-      # ── 6. LINE に URL を送信 ───────────────────────────────────────
-      - name: LINE にニュースを送信
-        run: |
-          curl -s -X POST https://api.line.me/v2/bot/message/push \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}" \
-            -d "{
-              \"to\": \"${{ secrets.LINE_USER_ID }}\",
-              \"messages\": [{
-                \"type\": \"text\",
-                \"text\": \"🏥 本日の小児医療ニュース\n${{ steps.generate.outputs.date }}\n\n▶ こちらからご覧ください\n${{ steps.generate.outputs.url }}\"
-              }]
-            }"

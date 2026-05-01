@@ -161,4 +161,42 @@ if github_output:
     print(f"[INFO] GitHub Actions outputs 設定完了")
 
 print(f"[INFO] 公開 URL: {page_url}")
+
+# ── LINE 送信 ──────────────────────────────────────────────────────
+import urllib.request
+
+line_token   = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN")
+line_user_id = os.environ.get("LINE_USER_ID")
+
+if line_token and line_user_id:
+    message_text = (
+        f"🏥 本日の小児医療ニュース\n"
+        f"{date_display}\n\n"
+        f"▶ こちらからご覧ください\n"
+        f"{page_url}"
+    )
+    payload = json.dumps({
+        "to": line_user_id,
+        "messages": [{"type": "text", "text": message_text}],
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.line.me/v2/bot/message/push",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {line_token}",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req) as res:
+            print(f"[INFO] LINE 送信成功: {res.status}")
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8")
+        print(f"[ERROR] LINE 送信失敗: {e.code} {body}", file=sys.stderr)
+        sys.exit(1)
+else:
+    print("[WARN] LINE_CHANNEL_ACCESS_TOKEN または LINE_USER_ID が未設定のためスキップ")
+
 print("[INFO] 完了")
